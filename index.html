@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planificador Financiero</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+.container {
+  max-width: 420px;
+  margin: auto;
+  background: #1e293b;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+h1 {
+  margin-bottom: 10px;
+}
+
+input {
+  width: 90%;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 8px;
+  border: none;
+}
+
+button {
+  width: 95%;
+  padding: 12px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 10px;
+  background: #22c55e;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #16a34a;
+}
+
+.resultado {
+  margin-top: 20px;
+  font-size: 18px;
+  background: #020617;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.tabs button {
+  background: #334155;
+}
+
+.tabs button.active {
+  background: #22c55e;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h1>💰 Planificador Financiero</h1>
+<p>Descubre cuánto puedes lograr</p>
+
+<div class="tabs">
+  <button onclick="mostrar('retiro')" class="active" id="btnRetiro">Retiro</button>
+  <button onclick="mostrar('inversion')" id="btnInversion">Inversión</button>
+</div>
+
+<!-- RETIRO -->
+<div id="retiro">
+
+<input type="number" id="edad" placeholder="Edad actual">
+<input type="number" id="retiroEdad" placeholder="Edad de retiro">
+<input type="number" id="ahorro" placeholder="Ahorro mensual">
+<input type="number" id="tasaRetiro" placeholder="Tasa anual (%)">
+
+<button onclick="calcularRetiro()">Calcular retiro</button>
+
+</div>
+
+<!-- INVERSION -->
+<div id="inversion" style="display:none;">
+
+<input type="number" id="inicial" placeholder="Inversión inicial">
+<input type="number" id="mensual" placeholder="Aportación mensual">
+<input type="number" id="años" placeholder="Años">
+<input type="number" id="tasaInv" placeholder="Tasa anual (%)">
+
+<button onclick="calcularInversion()">Calcular inversión</button>
+
+</div>
+
+<div class="resultado" id="resultado">
+Tu resultado aparecerá aquí
+</div>
+
+<button id="whatsapp" style="display:none;">Hablar por WhatsApp</button>
+
+</div>
+
+<script>
+
+function mostrar(tipo){
+  document.getElementById("retiro").style.display = tipo === "retiro" ? "block" : "none";
+  document.getElementById("inversion").style.display = tipo === "inversion" ? "block" : "none";
+
+  document.getElementById("btnRetiro").classList.remove("active");
+  document.getElementById("btnInversion").classList.remove("active");
+
+  if(tipo === "retiro"){
+    document.getElementById("btnRetiro").classList.add("active");
+  } else {
+    document.getElementById("btnInversion").classList.add("active");
+  }
+}
+
+function calcularRetiro(){
+  let edad = parseFloat(document.getElementById("edad").value);
+  let retiro = parseFloat(document.getElementById("retiroEdad").value);
+  let ahorro = parseFloat(document.getElementById("ahorro").value);
+  let tasa = parseFloat(document.getElementById("tasaRetiro").value)/100;
+
+  let años = retiro - edad;
+  let total = ahorro * 12 * años * (1 + tasa);
+
+  mostrarResultado(total, "retiro");
+}
+
+function calcularInversion(){
+  let inicial = parseFloat(document.getElementById("inicial").value);
+  let mensual = parseFloat(document.getElementById("mensual").value);
+  let años = parseFloat(document.getElementById("años").value);
+  let tasa = parseFloat(document.getElementById("tasaInv").value)/100;
+
+  let meses = años * 12;
+  let total = inicial;
+
+  for (let i = 0; i < meses; i++) {
+    total = (total + mensual) * (1 + tasa / 12);
+  }
+
+  mostrarResultado(total, "inversión");
+}
+
+function mostrarResultado(total, tipo){
+  let texto = tipo === "retiro"
+    ? "💼 Si sigues este plan, podrías tener:"
+    : "📈 Tu inversión podría crecer a:";
+
+  document.getElementById("resultado").innerHTML =
+    texto + "<br><br><strong>$" + total.toFixed(2) + "</strong>";
+
+  let mensaje = "Hola, hice mi cálculo de " + tipo + " y obtuve: $" + total.toFixed(2) + ". Quiero asesoría.";
+
+  let btn = document.getElementById("whatsapp");
+  btn.style.display = "block";
+  btn.onclick = function(){
+    window.open("https://wa.me/5212221234567?text=" + encodeURIComponent(mensaje));
+  }
+}
+
+</script>
+
+</body>
+</html>
